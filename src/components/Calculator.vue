@@ -1,8 +1,8 @@
 <template>
   <div class="calculator">
-    <div class="display">00112233</div>
-    <div class="btn">AC</div>
-    <div class="btn">+/-</div>
+    <div class="display">{{current || 0}}</div>
+    <div @click="clear" class="btn">AC</div>
+    <div @click="sign" class="btn">+/-</div>
     <div class="btn">%</div>
     <div class="btn operator">÷</div>
     <div class="btn">7</div>
@@ -25,12 +25,28 @@
 
 <script>
 export default {
+  data(){
+    return{
+      current: '',
+    }
+  },
+  methods: {
+    clear() {
+      this.current = '';
+    },
+    sign() {
+      this.current = this.current.charAt(0) === '-' ?
+      this.current.slice(1) : `-${this.current}`; 
+    }
+  }
 }
 </script>
 
 <style scoped>
 .calculator{
-  font-size: 40px;
+  margin: 0 auto;
+  width: 400px;
+  font-size: 35px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: minmax(50px, auto);
@@ -38,6 +54,8 @@ export default {
 
 .display{
   grid-column: 1 / 5;
+  background-color: #333;
+  color: white;
 }
 
 .zero{
@@ -46,7 +64,7 @@ export default {
 
 .btn {
   background-color: #eee;
-  border: 1px solid #000; 
+  border: 0.7px solid #999; 
 }
 
 .operator{
