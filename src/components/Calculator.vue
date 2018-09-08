@@ -19,15 +19,18 @@
     <div @click="plus" class="btn operator">+</div>
     <div @click="append('0')" class="btn zero">0</div>
     <div @click="dot" class="btn">.</div>
-    <div class="btn operator">=</div>
+    <div @click="equal" class="btn operator">=</div>
   </div>
 </template>
 
 <script>
 export default {
-  data(){
+  data() {
     return{
+      previous: null,
       current: '',
+      operator: null,
+      operatorClicked: false,
     }
   },
   methods: {
@@ -42,43 +45,70 @@ export default {
       this.current = `${parseFloat(this.current) / 100}`
     },
     append(number) {
+      if (this.operatorClicked) {
+        this.current = '';
+        this.operatorClicked = false;
+      }
       this.current = `${this.current}${number}`;
     },
     dot() {
       if (this.current.indexOf('.') === -1) {
         this.append('.');
       }
+    },
+    setPrevious() {
+      this.previous = this.current;
+      this.operatorClicked = true;
+    },
+    divide() {
+      this.operator = (a, b) => a / b;
+      this.setPrevious();
+    },
+    times() {
+      this.operator = (a, b) => a * b;
+      this.setPrevious();
+    },
+    minus() {
+      this.operator = (a, b) => a - b;
+      this.setPrevious();
+    },
+    plus() {
+      this.operator = (a, b) => a + b;
+      this.setPrevious();
+    },
+    equal() {
+      this.current = `${this.operator(
+        parseFloat(this.current), 
+        parseFloat(this.previous)
+        )}`;
+      this.previous = null;
     }
   }
 }
 </script>
 
 <style scoped>
-.calculator{
+.calculator {
   margin: 0 auto;
   width: 400px;
-  font-size: 35px;
+  font-size: 40px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: minmax(50px, auto);
 }
-
-.display{
+.display {
   grid-column: 1 / 5;
   background-color: #333;
   color: white;
 }
-
-.zero{
+.zero {
   grid-column: 1 / 3;
 }
-
 .btn {
-  background-color: #eee;
-  border: 0.7px solid #999; 
+  background-color: #F2F2F2;
+  border: 1px solid #999;
 }
-
-.operator{
+.operator {
   background-color: orange;
   color: white;
 }
